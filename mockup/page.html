@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Horita PSSDC mock-up</title>
+<meta name="description" content="Clickable mock-up of Horita PSSDC, the staff app that PSSDC's apps plug into. Sample data.">
+<link rel="icon" href="assets/pssdc-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #E4E9E1; --bar: #FFFFFF; --ink: #13201A; --muted: #55625A; --line: #D3DACF;
+    --green: #086F36; --amber: #E8A317; --pill: #EBEEE8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page: #0A0F0C; --bar: #151C18; --ink: #E7EEE9; --muted: #A1ADA5; --line: #2A352E;
+      --green: #177A45; --pill: #1E2722;
+    }
+  }
+  :root[data-theme="dark"] {
+    --page: #0A0F0C; --bar: #151C18; --ink: #E7EEE9; --muted: #A1ADA5; --line: #2A352E;
+    --green: #177A45; --pill: #1E2722;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--page); color: var(--ink);
+    font-family: 'Public Sans', system-ui, sans-serif;
+    overflow: hidden;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea { font-family: inherit; }
+
+  .bar {
+    height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px;
+    background: var(--bar); border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+  .brand img { width: 36px; height: 36px; border-radius: 18px; background: #FFFFFF; flex-shrink: 0; }
+  .brand b { font-size: 16px; font-weight: 800; white-space: nowrap; }
+  .brand span { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand .amber { width: 8px; height: 8px; border-radius: 4px; background: var(--amber); flex-shrink: 0; }
+
+  .flip { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--pill); flex-shrink: 0; }
+  .flip button {
+    height: 38px; min-width: 44px; padding: 0 14px; border: none; border-radius: 9px; background: transparent;
+    color: var(--muted); font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .flip button[aria-pressed="true"] { background: var(--green); color: #FFFFFF; }
+
+  .stage { height: calc(100% - 60px); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .holder { position: relative; flex-shrink: 0; }
+  .frame { position: absolute; top: 0; left: 0; transform-origin: top left; }
+  .phone { width: 410px; height: 864px; padding: 10px; border-radius: 46px; background: #0E1411; box-shadow: 0 30px 70px rgba(8, 40, 20, 0.28); }
+  .phone .screen { width: 390px; height: 844px; border-radius: 36px; overflow: hidden; }
+  .computer { width: 1440px; height: 900px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 30px 70px rgba(8, 40, 20, 0.22); }
+  [hidden] { display: none !important; }
+  /* Real phones hide scrollbars; do the same inside the frames. */
+  .frame * { scrollbar-width: none; }
+  .frame *::-webkit-scrollbar { display: none; }
+
+  @media (max-width: 560px) {
+    .brand span, .flip .label { display: none; }
+    .flip button { padding: 0 12px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <img src="assets/pssdc-logo.png" alt="PSSDC logo">
+    <b>Horita PSSDC</b>
+    <i class="amber" aria-hidden="true"></i>
+    <span>Clickable mock-up · sample data</span>
+  </div>
+  <div class="flip" role="group" aria-label="Choose a view">
+    <button type="button" id="btn-phone" aria-pressed="true" aria-label="Phone view">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10v20H7zM11 18h2"></path></svg>
+      <span class="label">Phone</span>
+    </button>
+    <button type="button" id="btn-computer" aria-pressed="false" aria-label="Computer view">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v12H3zM8 20h8M12 16v4"></path></svg>
+      <span class="label">Computer</span>
+    </button>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+  <div class="holder" id="holder-phone">
+    <div class="frame phone" id="frame-phone"><div class="screen" id="app-phone"></div></div>
+  </div>
+  <div class="holder" id="holder-computer" hidden>
+    <div class="frame computer" id="frame-computer"><div id="app-computer"></div></div>
+  </div>
+</main>
+
+<template id="tpl-phone"><!--PHONE_MARKUP--></template>
+<template id="tpl-computer"><!--COMPUTER_MARKUP--></template>
+<script type="text/plain" id="js-phone"><!--PHONE_SCRIPT--></script>
+<script type="text/plain" id="js-computer"><!--COMPUTER_SCRIPT--></script>
+
+<script src="runtime.js"></script>
+<script>
+(function () {
+  var SIZES = { phone: [410, 864], computer: [1440, 900] };
+  var hosts = {};
+  ['phone', 'computer'].forEach(function (k) {
+    hosts[k] = HoritaMockup.mount(
+      document.getElementById('app-' + k),
+      document.getElementById('tpl-' + k).content,
+      document.getElementById('js-' + k).textContent,
+      {}
+    );
+  });
+
+  var mode = location.hash === '#computer' ? 'computer' : 'phone';
+
+  function fit() {
+    var stage = document.getElementById('stage');
+    var size = SIZES[mode];
+    var pad = window.innerWidth < 560 ? 12 : 32;
+    var scale = Math.min(1, (stage.clientWidth - pad) / size[0], (stage.clientHeight - pad) / size[1]);
+    var holder = document.getElementById('holder-' + mode);
+    holder.style.width = Math.floor(size[0] * scale) + 'px';
+    holder.style.height = Math.floor(size[1] * scale) + 'px';
+    document.getElementById('frame-' + mode).style.transform = 'scale(' + scale + ')';
+  }
+
+  function show(next) {
+    // Carry the chosen view (staff, director...) and dark mode across.
+    var from = hosts[mode].comp, to = hosts[next].comp;
+    if (next !== mode) {
+      to.state.view = from.state.view || null;
+      to.state.dark = from.state.dark;
+      hosts[next].render();
+    }
+    mode = next;
+    document.getElementById('holder-phone').hidden = mode !== 'phone';
+    document.getElementById('holder-computer').hidden = mode !== 'computer';
+    document.getElementById('btn-phone').setAttribute('aria-pressed', String(mode === 'phone'));
+    document.getElementById('btn-computer').setAttribute('aria-pressed', String(mode === 'computer'));
+    try { history.replaceState(null, '', mode === 'computer' ? '#computer' : '#phone'); } catch (e) { /* file:// */ }
+    fit();
+  }
+
+  document.getElementById('btn-phone').addEventListener('click', function () { show('phone'); });
+  document.getElementById('btn-computer').addEventListener('click', function () { show('computer'); });
+  window.addEventListener('resize', fit);
+  show(mode);
+})();
+</script>
+</body>
+</html>
